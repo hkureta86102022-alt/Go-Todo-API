@@ -7,5 +7,5 @@ import (
 )
 
 func InitRoutes(e *echo.Echo) {
-	e.GET("/", handler.GetTodos)
+	e.GET("/todos", handler.GetTodos)
 }
