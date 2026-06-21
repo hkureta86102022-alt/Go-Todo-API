@@ -14,3 +14,11 @@ func GetTodos(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, Todos)
 }
+
+func CreateTodo(c echo.Context) error {
+	var todo model.Todo
+	if err := c.Bind(&todo); err != nil {
+		return c.JSON(http.StatusBadRequest, "Invalid request JSON")
+	}
+	return c.JSON(http.StatusCreated, todo)
+}
