@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"go-todo-api/internal/model"
 	"net/http"
 
@@ -21,4 +22,13 @@ func CreateTodo(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, "Invalid request JSON")
 	}
 	return c.JSON(http.StatusCreated, todo)
+}
+
+func DeleteTodo(c echo.Context) error {
+	id := c.Param("id")
+
+	return c.JSON(http.StatusOK, map[string]string{
+		"message": fmt.Sprintf("ID %s: Todo deleted successfully", id),
+	})
+
 }
