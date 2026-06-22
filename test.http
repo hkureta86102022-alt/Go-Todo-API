@@ -1,7 +1,11 @@
 ###
 POST http://localhost:8080/todos
 Content-Type: application/json
+
 {
-  "title": "New Todo",
+    "id": 1,
+  "title": "New Todos",
   "completed": false
 }
+###
+DELETE http://localhost:8080/todos/1
