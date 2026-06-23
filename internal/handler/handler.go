@@ -32,3 +32,18 @@ func DeleteTodo(c echo.Context) error {
 	})
 
 }
+
+func UpdateTodo(c echo.Context) error {
+
+	id := c.Param("id")
+	var todo model.Todo
+	if err := c.Bind(&todo); err != nil {
+		return c.JSON(http.StatusBadRequest, "Invalid request JSON")
+	}
+
+	return c.JSON(http.StatusOK, map[string]any{
+		"id":        id,
+		"title":     todo.Title,
+		"completed": todo.Completed,
+	})
+}

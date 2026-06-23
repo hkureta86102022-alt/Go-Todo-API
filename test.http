@@ -9,3 +9,13 @@ Content-Type: application/json
 }
 ###
 DELETE http://localhost:8080/todos/1
+###
+PUT http://localhost:8080/todos/1
+Content-Type: application/json
+
+{
+  "title": "Updated Todos",
+  "completed": true
+}
+
+    
