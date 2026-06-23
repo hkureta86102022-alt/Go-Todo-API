@@ -53,3 +53,6 @@ go run cmd/main.go
 - POST /todos
 - PUT /todos/:id
 - DELETE /todos/:id
+
+##✅実装済み機能
+- [x] Todo CRUD API (GET/POST/PUT/DELETE) - 2026/06/23実装完了
