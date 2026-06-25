@@ -3,8 +3,8 @@ POST http://localhost:8080/todos
 Content-Type: application/json
 
 {
-    "id": 1,
-  "title": "New Todos",
+    "id": 2,
+  "title": "２回目のTodo",
   "completed": false
 }
 ###

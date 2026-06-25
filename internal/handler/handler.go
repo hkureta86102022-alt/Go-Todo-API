@@ -3,12 +3,16 @@ package handler
 import (
 	"fmt"
 	"go-todo-api/internal/model"
+	"go-todo-api/internal/repository"
+
+	"github.com/jackc/pgx/v5"
+
 	"net/http"
 
 	"github.com/labstack/echo/v4"
 )
 
-func GetTodos(c echo.Context) error {
+func (h *Handler) GetTodos(c echo.Context) error {
 	Todos := []model.Todo{
 		{ID: 1, Title: "Todo 1", Completed: false},
 		{ID: 2, Title: "Todo 2", Completed: true},
@@ -16,15 +20,20 @@ func GetTodos(c echo.Context) error {
 	return c.JSON(http.StatusOK, Todos)
 }
 
-func CreateTodo(c echo.Context) error {
+func (h *Handler) CreateTodo(c echo.Context) error {
 	var todo model.Todo
 	if err := c.Bind(&todo); err != nil {
 		return c.JSON(http.StatusBadRequest, "Invalid request JSON")
 	}
+	err := repository.CreateTodo(c.Request().Context(), h.conn, todo.Title, todo.Completed)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, "Failed to create todo")
+	}
+
 	return c.JSON(http.StatusCreated, todo)
 }
 
-func DeleteTodo(c echo.Context) error {
+func (h *Handler) DeleteTodo(c echo.Context) error {
 	id := c.Param("id")
 
 	return c.JSON(http.StatusOK, map[string]string{
@@ -33,7 +42,7 @@ func DeleteTodo(c echo.Context) error {
 
 }
 
-func UpdateTodo(c echo.Context) error {
+func (h *Handler) UpdateTodo(c echo.Context) error {
 
 	id := c.Param("id")
 	var todo model.Todo
@@ -46,4 +55,12 @@ func UpdateTodo(c echo.Context) error {
 		"title":     todo.Title,
 		"completed": todo.Completed,
 	})
+}
+
+type Handler struct {
+	conn *pgx.Conn
+}
+
+func NewHandler(conn *pgx.Conn) *Handler {
+	return &Handler{conn: conn}
 }

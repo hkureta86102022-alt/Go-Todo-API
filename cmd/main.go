@@ -28,7 +28,7 @@ func main() {
 	log.Println("Connected to the database successfully")
 
 	e := echo.New()
-	route.InitRoutes(e)
+	route.InitRoutes(e, conn)
 
 	e.Logger.Fatal(e.Start(":8080"))
 }
