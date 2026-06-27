@@ -7,7 +7,6 @@ import (
 	"log"
 
 	"github.com/joho/godotenv"
-
 	"github.com/labstack/echo/v4"
 )
 
@@ -19,16 +18,16 @@ func main() {
 	}
 
 	ctx := context.Background()
-	conn, err := database.ConnectDB(ctx)
+	db, err := database.ConnectDB(ctx)
 	if err != nil {
 		log.Fatalf("Failed to connect to the database: %v", err)
 	}
-	defer conn.Close(ctx)
+	defer db.Close()
 
 	log.Println("Connected to the database successfully")
 
 	e := echo.New()
-	route.InitRoutes(e, conn)
+	route.InitRoutes(e, db)
 
 	e.Logger.Fatal(e.Start(":8080"))
 }

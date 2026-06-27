@@ -4,8 +4,7 @@ import (
 	"fmt"
 	"go-todo-api/internal/model"
 	"go-todo-api/internal/repository"
-
-	"github.com/jackc/pgx/v5"
+	"strconv"
 
 	"net/http"
 
@@ -13,11 +12,11 @@ import (
 )
 
 func (h *Handler) GetTodos(c echo.Context) error {
-	Todos := []model.Todo{
-		{ID: 1, Title: "Todo 1", Completed: false},
-		{ID: 2, Title: "Todo 2", Completed: true},
+	todos, err := h.repo.GetTodos(c.Request().Context())
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, "Failed to fetch todos")
 	}
-	return c.JSON(http.StatusOK, Todos)
+	return c.JSON(http.StatusOK, todos)
 }
 
 func (h *Handler) CreateTodo(c echo.Context) error {
@@ -25,29 +24,44 @@ func (h *Handler) CreateTodo(c echo.Context) error {
 	if err := c.Bind(&todo); err != nil {
 		return c.JSON(http.StatusBadRequest, "Invalid request JSON")
 	}
-	err := repository.CreateTodo(c.Request().Context(), h.conn, todo.Title, todo.Completed)
+	err := h.repo.CreateTodo(c.Request().Context(), todo.Title, todo.Completed)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, "Failed to create todo")
 	}
 
 	return c.JSON(http.StatusCreated, todo)
 }
-
 func (h *Handler) DeleteTodo(c echo.Context) error {
-	id := c.Param("id")
+	idStr := c.Param("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, "Invalid ID")
+	}
+
+	err = h.repo.DeleteTodo(c.Request().Context(), id)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, "Failed to delete todo")
+	}
 
 	return c.JSON(http.StatusOK, map[string]string{
-		"message": fmt.Sprintf("ID %s: Todo deleted successfully", id),
+		"message": fmt.Sprintf("ID %d: Todo deleted successfully", id),
 	})
-
 }
-
 func (h *Handler) UpdateTodo(c echo.Context) error {
+	idStr := c.Param("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, "Invalid ID")
+	}
 
-	id := c.Param("id")
 	var todo model.Todo
 	if err := c.Bind(&todo); err != nil {
 		return c.JSON(http.StatusBadRequest, "Invalid request JSON")
+	}
+
+	err = h.repo.UpdateTodo(c.Request().Context(), id, todo.Title, todo.Completed)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, "Failed to update todo")
 	}
 
 	return c.JSON(http.StatusOK, map[string]any{
@@ -58,9 +72,9 @@ func (h *Handler) UpdateTodo(c echo.Context) error {
 }
 
 type Handler struct {
-	conn *pgx.Conn
+	repo *repository.TodoRepository
 }
 
-func NewHandler(conn *pgx.Conn) *Handler {
-	return &Handler{conn: conn}
+func NewHandler(repo *repository.TodoRepository) *Handler {
+	return &Handler{repo: repo}
 }
