@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"fmt"
+	"go-todo-api/internal/auth"
 	"go-todo-api/internal/database"
 	"go-todo-api/internal/route"
 	"log"
@@ -28,6 +30,12 @@ func main() {
 
 	e := echo.New()
 	route.InitRoutes(e, db)
+	token, err := auth.GenerateJWT(1)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(token)
 
 	e.Logger.Fatal(e.Start(":8080"))
 }

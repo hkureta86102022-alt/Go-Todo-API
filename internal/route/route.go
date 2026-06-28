@@ -3,15 +3,20 @@ package route
 import (
 	"go-todo-api/internal/handler"
 
-	"github.com/jackc/pgx/v5"
+	"go-todo-api/internal/repository"
+
+	"github.com/jackc/pgx/v5/pgxpool"
 
 	"github.com/labstack/echo/v4"
 )
 
-func InitRoutes(e *echo.Echo, conn *pgx.Conn) {
-	h := handler.NewHandler(conn)
+func InitRoutes(e *echo.Echo, db *pgxpool.Pool) {
+	repo := repository.NewTodoRepository(db)
+	h := handler.NewHandler(repo)
+
 	e.GET("/todos", h.GetTodos)
 	e.POST("/todos", h.CreateTodo)
 	e.DELETE("/todos/:id", h.DeleteTodo)
 	e.PUT("/todos/:id", h.UpdateTodo)
+
 }
