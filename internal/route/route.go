@@ -20,3 +20,8 @@ func InitRoutes(e *echo.Echo, db *pgxpool.Pool) {
 	e.PUT("/todos/:id", h.UpdateTodo)
 
 }
+
+func UserInitRoutes(e *echo.Echo, h *handler.UserHandler) {
+
+	e.POST("/signup", h.Signup)
+}

@@ -1,10 +1,13 @@
 ###
+GET http://localhost:8080/todos
+
+###
 POST http://localhost:8080/todos
 Content-Type: application/json
 
 {
     "id": 2,
-  "title": "２回目のTodo",
+  "title": "3回目のTodo",
   "completed": false
 }
 ###
@@ -17,5 +20,11 @@ Content-Type: application/json
   "title": "Updated Todos",
   "completed": true
 }
+###
+POST http://localhost:8080/signup 
+Content-Type: application/json
 
-    
+{
+  "email": "test2@gmail.com",
+  "password": "kh167402"
+}

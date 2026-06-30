@@ -5,7 +5,10 @@ import (
 	"fmt"
 	"go-todo-api/internal/auth"
 	"go-todo-api/internal/database"
+	"go-todo-api/internal/handler"
+	"go-todo-api/internal/repository"
 	"go-todo-api/internal/route"
+
 	"log"
 
 	"github.com/joho/godotenv"
@@ -34,6 +37,10 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	repo := repository.NewUserRepository(db)
+	h := handler.NewUserHandler(*repo)
+
+	route.UserInitRoutes(e, h)
 
 	fmt.Println(token)
 
