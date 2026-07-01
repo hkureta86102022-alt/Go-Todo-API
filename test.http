@@ -1,9 +1,11 @@
 ###
-GET http://localhost:8080/todos
+GET http://localhost:8080/api/todos
+Authorization: Bearer {{token}}
 
 ###
-POST http://localhost:8080/todos
+POST http://localhost:8080/api/todos
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
     "id": 2,
@@ -11,9 +13,9 @@ Content-Type: application/json
   "completed": false
 }
 ###
-DELETE http://localhost:8080/todos/1
+DELETE http://localhost:8080/api/todos/1
 ###
-PUT http://localhost:8080/todos/1
+PUT http://localhost:8080/api/todos/1
 Content-Type: application/json
 
 {
@@ -21,10 +23,24 @@ Content-Type: application/json
   "completed": true
 }
 ###
-POST http://localhost:8080/signup 
+POST http://localhost:8080/api/signup 
 Content-Type: application/json
 
 {
   "email": "test2@gmail.com",
-  "password": "kh167402"
+  "password": "test"
 }
+
+###
+POST http://localhost:8080/api/login
+Content-Type: application/json
+
+{
+  "email": "test2@gmail.com",
+  "password": "test"
+}
+### 
+GET http://localhost:8080/api/me
+Authorization: Bearer {{token}}
+ 
+ @token =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3ODI5NzQyNzMsInVzZXJfaWQiOjZ9.yc8X_Y0Nj_Ag5Pr89GODgXWJOlhV510OuKmfZA48sQ8

@@ -15,6 +15,10 @@ func GenerateJWT(userID int) (string, error) {
 		return "", fmt.Errorf("JWT_SECRET is not set")
 	}
 
+	if userID < 0 {
+		return "", fmt.Errorf("limited to positive numbers")
+	}
+
 	claims := jwt.MapClaims{
 		"user_id": userID,
 		"exp":     time.Now().Add(time.Hour * 24).Unix(),
@@ -24,3 +28,31 @@ func GenerateJWT(userID int) (string, error) {
 	return token.SignedString([]byte(secretKey))
 }
 
+func ValidateJWT(tokenStr string) (jwt.MapClaims, error) {
+	secretKey := os.Getenv("JWT_SECRET")
+	if secretKey == "" {
+		return nil, fmt.Errorf("JWT_SECRET is not set")
+	}
+
+	token, err := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
+		return []byte(secretKey), nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	if !token.Valid {
+		return nil, fmt.Errorf("invalid token")
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return nil, fmt.Errorf("invalid claims")
+	}
+
+	return claims, nil
+}

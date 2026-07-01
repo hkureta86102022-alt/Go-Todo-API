@@ -2,8 +2,7 @@ package main
 
 import (
 	"context"
-	"fmt"
-	"go-todo-api/internal/auth"
+
 	"go-todo-api/internal/database"
 	"go-todo-api/internal/handler"
 	"go-todo-api/internal/repository"
@@ -32,17 +31,8 @@ func main() {
 	log.Println("Connected to the database successfully")
 
 	e := echo.New()
-	route.InitRoutes(e, db)
-	token, err := auth.GenerateJWT(1)
-	if err != nil {
-		panic(err)
-	}
-	repo := repository.NewUserRepository(db)
-	h := handler.NewUserHandler(*repo)
-
-	route.UserInitRoutes(e, h)
-
-	fmt.Println(token)
+	userHandler := handler.NewUserHandler(repository.NewUserRepository(db))
+	route.InitRoutes(e, db, userHandler)
 
 	e.Logger.Fatal(e.Start(":8080"))
 }
