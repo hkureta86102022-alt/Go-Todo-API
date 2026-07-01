@@ -43,4 +43,4 @@ Content-Type: application/json
 GET http://localhost:8080/api/me
 Authorization: Bearer {{token}}
  
- @token =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3ODI5NzQyNzMsInVzZXJfaWQiOjZ9.yc8X_Y0Nj_Ag5Pr89GODgXWJOlhV510OuKmfZA48sQ8
+ @token = ""
